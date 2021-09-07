@@ -1,0 +1,116 @@
+/*
+ Script criado para a criação do banco de dados da Fazenda
+ Data Criação: 01/04/2021
+ Disciplina: Banco de Dados I   ano: 2021 
+*/
+
+DROP TABLE IF EXISTS funcao;
+DROP TABLE IF EXISTS funcionaro;
+DROP TABLE IF EXISTS localidade;
+DROP TABLE IF EXISTS fazenda;
+DROP TABLE IF EXISTS funcionario_fazenda;
+DROP TABLE IF EXISTS lote;
+DROP TABLE IF EXISTS raca;
+DROP TABLE IF EXISTS animal;
+DROP TABLE IF EXISTS animal_caracteristica;
+DROP TABLE IF EXISTS animal_morto;
+
+--Criando a tabela funcao
+CREATE TABLE funcao (
+   codigo int,
+   nome_funcao varchar (30) NOT NULL,
+   PRIMARY KEY (codigo)
+);
+
+--Criando a tabela funcionario
+CREATE TABLE funcionario (
+   codigo int, 
+   nome varchar(60) NOT NULL, 
+   sexo char(1) DEFAULT 'M',
+   salario real CHECK(salario >= 1100.00), 
+   dataNascimento date CHECK (dataNascimento > '01/01/1950'), 
+   codFuncao int,
+   experiencia boolean,
+   PRIMARY KEY (codigo),
+   FOREIGN KEY (codFuncao) REFERENCES funcao(codigo) ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+--Criando a tabela localidade
+CREATE TABLE localidade(
+   codigo int,
+   nome_localidade varchar (30) NOT NULL,
+   PRIMARY KEY (codigo)
+);
+
+--Criando a tabela fazenda
+CREATE TABLE fazenda (
+    codigo integer PRIMARY KEY, 
+    nome varchar(50) NOT NULL, 
+    area numeric(6,2) NOT NULL, 
+    codLocalidade int, 
+    valor_estimado money,
+    codFuncResp integer,
+    FOREIGN KEY (codFuncResp) REFERENCES funcionario(codigo) ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY (codLocalidade) REFERENCES localidade(codigo) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+--Criando a tabela funcionario_fazenda
+CREATE TABLE funcionario_fazenda (
+    codigoFunc integer, 
+    codFazenda integer, 
+    dataInicioContrato date,
+    dataFimContrato date,
+    PRIMARY KEY (codigoFunc, codFazenda, dataInicioContrato),
+    FOREIGN KEY (codigoFunc) REFERENCES funcionario(codigo) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (codFazenda) REFERENCES fazenda(codigo) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+--Criando a tabela lote
+CREATE TABLE lote (
+    idLote integer, 
+    descricao varchar(50) NOT NULL, 
+    codFuncResp integer, 
+    codFazenda integer,
+    PRIMARY KEY (idLote),
+    FOREIGN KEY (codFuncResp) REFERENCES funcionario(codigo) ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY (codFazenda) REFERENCES fazenda(codigo) ON DELETE CASCADE ON UPDATE CASCADE   
+);
+
+--Criando a tabela raça
+CREATE TABLE raca(
+   codigo int,
+   nome_raca varchar (30) NOT NULL,
+   PRIMARY KEY (codigo)
+);
+
+--Criando a tabela Animal
+CREATE TABLE animal(
+    codigo integer, 
+    nome varchar(30) NOT NULL, 
+    codRaca integer, 
+    sexo char(1) NOT NULL DEFAULT 'M',  
+    dataNascimento date, 
+    idLote integer, 
+    codPai integer,
+    PRIMARY KEY (codigo),
+    FOREIGN KEY (idLote) REFERENCES lote(idLote) ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY (codRaca) REFERENCES raca(codigo) ON DELETE SET NULL ON UPDATE CASCADE 
+);
+
+--Criando a tabela animal_caracteristica
+CREATE TABLE animal_caracteristica(
+    codAnimal integer, 
+    caracteristica varchar (50) NOT NULL,
+    PRIMARY KEY (codAnimal, caracteristica)
+);
+
+--Criando a tabela animal_morto			
+CREATE TABLE animal_morto(
+   codigo integer, 
+   nome varchar(30), 
+   codRaca integer, 
+   motivoMorte varchar(100) NOT NULL, 
+   dataMorte date,
+   PRIMARY KEY(codigo)
+);
+

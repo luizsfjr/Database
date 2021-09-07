@@ -1,0 +1,58 @@
+DROP TABLE IF EXISTS usuario;
+DROP TABLE IF EXISTS grupo;
+DROP TABLE IF EXISTS permissao;
+DROP TABLE IF EXISTS  usuario_grupo;
+DROP TABLE IF EXISTS grupo_permissao;
+
+
+CREATE TABLE usuario (
+    codigo INT PRIMARY KEY,
+    nome VARCHAR(50) NOT NULL,
+    email VARCHAR(50) NOT NULL,
+    senha VARCHAR(30) NOT NULL,
+    ativo BOOLEAN DEFAULT true,
+    data_nascimento DATE
+);
+
+CREATE TABLE grupo (
+    codigo SERIAL PRIMARY KEY,
+    nome VARCHAR(50) NOT NULL,
+    data_criacao date
+);
+
+CREATE TABLE permissao (
+    codigo INT PRIMARY KEY,
+    nome VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE usuario_grupo (
+    codigo_usuario INT NOT NULL,
+    codigo_grupo INT NOT NULL,
+    PRIMARY KEY (codigo_usuario, codigo_grupo),
+    FOREIGN KEY (codigo_usuario) REFERENCES usuario(codigo) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (codigo_grupo) REFERENCES grupo(codigo) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE grupo_permissao (
+    codigo_grupo INT NOT NULL,
+    codigo_permissao INT NOT NULL,
+    PRIMARY KEY (codigo_grupo, codigo_permissao),
+    FOREIGN KEY (codigo_grupo) REFERENCES grupo(codigo) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (codigo_permissao) REFERENCES permissao(codigo) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+=============================exercícios========================
+1) Altere a tabela usuario adicionando o campo data_criacao do tipo date e hora_cadastro do tipo time.
+
+2) Altere a tabela grupo deletando a coluna data_criacao
+
+3) Altere o tipo do campo nome da tabela permissao para varchar(30)
+
+4) Renomeie o campo hora_cadastro para hora_criacao
+
+5) Insira os registros abaixo nas tabelas indicadas:
+Usuario (codigo =1, nome = 'Ana Moraes', email = 'anamora@gmail.com', senha = 'x23c23', ativo=true, dataNascimento = '09/09/2003', dataCriacao = '07/07/2020', horaCriacao = '23:00');
+Usuario (codigo =1, nome = 'Sofia Sá', email = 'sofia@gmail.com', senha = 'j897234x', ativo=false, dataNascimento = '10/07/2008', dataCriacao = '12/10/2020', horaCriacao = '14:50');
+Grupo (nome = 'contabil', data_criacao = '01/01/2019')
+
+
